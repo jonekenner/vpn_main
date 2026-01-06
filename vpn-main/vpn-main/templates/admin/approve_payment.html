@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Approve Payment - Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-2">
+            <i class="fas fa-check-circle text-green-400 mr-3"></i>Approve Payment
+        </h1>
+        <p class="text-gray-400">Review payment and provide VLESS URL for the client</p>
+    </div>
+
+    <div class="bg-gray-800 rounded-lg p-6 border border-gray-700 mb-6">
+        <h2 class="text-xl font-bold mb-4">Payment Details</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm text-gray-400">User</p>
+                <p class="font-semibold">{{ payment['email'] }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-400">Plan</p>
+                <p class="font-semibold">{{ payment['plan_name'] }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-400">Bank Name</p>
+                <p class="font-semibold">{{ payment['bank_name'] }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-400">Account Number</p>
+                <p class="font-mono font-semibold">{{ payment['account_number'] }}</p>
+            </div>
+            {% if payment['transaction_id'] %}
+            <div>
+                <p class="text-sm text-gray-400">Transaction ID</p>
+                <p class="font-mono font-semibold">{{ payment['transaction_id'] }}</p>
+            </div>
+            {% endif %}
+            <div>
+                <p class="text-sm text-gray-400">Submitted</p>
+                <p class="font-semibold">{{ payment['submitted_at'][:19] if payment['submitted_at'] else 'N/A' }}</p>
+            </div>
+        </div>
+        <div class="mt-4">
+            <a href="{{ url_for('admin_view_payment_slip', filename=payment['payment_slip_filename']) }}" 
+               target="_blank"
+               class="inline-block px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition">
+                <i class="fas fa-eye mr-2"></i>View Payment Slip
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <h2 class="text-xl font-bold mb-4">
+            <i class="fas fa-link text-blue-400 mr-2"></i>VLESS Configuration
+        </h2>
+        <form method="POST" action="{{ url_for('admin_approve_payment', payment_id=payment['id']) }}" class="space-y-4">
+            <div>
+                <label class="block text-sm font-semibold mb-2">VLESS URL *</label>
+                <textarea name="vless_url" required rows="3"
+                          class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 font-mono text-sm"
+                          placeholder="vless://c47ea8ab-5a99-4bac-a00f-0f2f0fe694f2@onyxvpn.samuditha.my:443/?security=tls&encryption=none&headerType=none&type=tcp&flow=none&fp=chrome&sni=aka.ms&alpn=h3%2c+h2%2c+http%2f1.1#Onyx-Shakthi"></textarea>
+                <p class="text-xs text-gray-400 mt-1">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Paste the complete VLESS URL that will be assigned to this user
+                </p>
+            </div>
+            
+            <div class="flex space-x-4">
+                <button type="submit" class="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition">
+                    <i class="fas fa-check mr-2"></i>Approve & Activate
+                </button>
+                <a href="{{ url_for('admin_payments') }}" class="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition text-center">
+                    <i class="fas fa-times mr-2"></i>Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VPN Service{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'yellow': {
+                            '400': '#fbbf24',
+                            '500': '#f59e0b',
+                            '600': '#d97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-white">
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <a href="{{ url_for('index') }}" class="text-xl font-bold gradient-text float-animation">
+                    <i class="fas fa-shield-alt mr-2"></i>VPN Service
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-6">
+                    <a href="{{ url_for('index') }}" class="text-white hover:text-yellow-400 transition-all duration-300">Home</a>
+                    <a href="{{ url_for('pricing') }}" class="text-white hover:text-yellow-400 transition-all duration-300">Pricing</a>
+                    <a href="{{ url_for('servers') }}" class="text-white hover:text-yellow-400 transition-all duration-300">Servers</a>
+                    <a href="{{ url_for('faq') }}" class="text-white hover:text-yellow-400 transition-all duration-300">FAQ</a>
+                    <a href="{{ url_for('contact') }}" class="text-white hover:text-yellow-400 transition-all duration-300">Contact</a>
+                </div>
+                
+                <div class="flex items-center space-x-2 md:space-x-4">
+                    <!-- Hamburger Menu Button (Mobile) -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden px-3 py-2 border-2 border-yellow-400 rounded-lg text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all" id="mobile-menu-btn" title="Toggle Menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    
+                    <!-- Desktop Auth Links -->
+                    <div class="hidden md:flex space-x-2">
+                        {% if session.user_id %}
+                            {% if session.is_admin %}
+                                <a href="{{ url_for('admin_dashboard') }}" class="btn-primary">
+                                    <i class="fas fa-cog mr-1"></i>Admin
+                                </a>
+                            {% endif %}
+                            <a href="{{ url_for('dashboard') }}" class="btn-primary">
+                                <i class="fas fa-user mr-1"></i>Dashboard
+                            </a>
+                            <a href="{{ url_for('logout') }}" class="btn-secondary">
+                                <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('auth_page') }}" class="btn-primary">
+                                <i class="fas fa-sign-in-alt mr-1"></i>Login / Sign Up
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu (Hidden by default) -->
+            <div id="mobile-menu" class="hidden md:hidden border-t border-yellow-400 bg-gray-900 bg-opacity-95 backdrop-blur-sm">
+                <div class="px-4 py-4 space-y-3">
+                    <a href="{{ url_for('index') }}" class="block text-white hover:text-yellow-400 transition-all duration-300 py-2 px-3 rounded-lg hover:bg-gray-800">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </a>
+                    <a href="{{ url_for('pricing') }}" class="block text-white hover:text-yellow-400 transition-all duration-300 py-2 px-3 rounded-lg hover:bg-gray-800">
+                        <i class="fas fa-tag mr-2"></i>Pricing
+                    </a>
+                    <a href="{{ url_for('servers') }}" class="block text-white hover:text-yellow-400 transition-all duration-300 py-2 px-3 rounded-lg hover:bg-gray-800">
+                        <i class="fas fa-server mr-2"></i>Servers
+                    </a>
+                    <a href="{{ url_for('faq') }}" class="block text-white hover:text-yellow-400 transition-all duration-300 py-2 px-3 rounded-lg hover:bg-gray-800">
+                        <i class="fas fa-question-circle mr-2"></i>FAQ
+                    </a>
+                    <a href="{{ url_for('contact') }}" class="block text-white hover:text-yellow-400 transition-all duration-300 py-2 px-3 rounded-lg hover:bg-gray-800">
+                        <i class="fas fa-envelope mr-2"></i>Contact
+                    </a>
+                    
+                    <hr class="border-yellow-400 border-opacity-30 my-2">
+                    
+                    <!-- Mobile Auth Links -->
+                    <div class="space-y-2">
+                        {% if session.user_id %}
+                            {% if session.is_admin %}
+                                <a href="{{ url_for('admin_dashboard') }}" class="block text-white bg-blue-600 hover:bg-blue-700 transition-all duration-300 py-2 px-3 rounded-lg font-semibold text-center">
+                                    <i class="fas fa-cog mr-2"></i>Admin Panel
+                                </a>
+                            {% endif %}
+                            <a href="{{ url_for('dashboard') }}" class="block text-white bg-blue-600 hover:bg-blue-700 transition-all duration-300 py-2 px-3 rounded-lg font-semibold text-center">
+                                <i class="fas fa-user mr-2"></i>My Dashboard
+                            </a>
+                            <a href="{{ url_for('logout') }}" class="block text-white bg-red-600 hover:bg-red-700 transition-all duration-300 py-2 px-3 rounded-lg font-semibold text-center">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('auth_page') }}" class="block text-black bg-yellow-400 hover:bg-yellow-500 transition-all duration-300 py-2 px-3 rounded-lg font-semibold text-center">
+                                <i class="fas fa-sign-in-alt mr-2"></i>Login / Sign Up
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% if session.get('message') %}
+    <div class="alert alert-success text-white px-4 py-3 rounded-lg mx-4 mt-4 flex items-center justify-between backdrop-blur-sm bg-opacity-90">
+        <span><i class="fas fa-check-circle mr-2 text-green-400"></i>{{ session.pop('message') }}</span>
+        <button onclick="this.parentElement.style.animation='fadeOut 0.3s'; setTimeout(() => this.parentElement.remove(), 300)" class="text-white hover:text-yellow-400 transition">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    {% endif %}
+
+    {% if session.get('error') %}
+    <div class="alert alert-error text-white px-4 py-3 rounded-lg mx-4 mt-4 flex items-center justify-between backdrop-blur-sm bg-opacity-90">
+        <span><i class="fas fa-exclamation-circle mr-2 text-red-400"></i>{{ session.pop('error') }}</span>
+        <button onclick="this.parentElement.style.animation='fadeOut 0.3s'; setTimeout(() => this.parentElement.remove(), 300)" class="text-white hover:text-yellow-400 transition">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    {% endif %}
+
+    {% if session.get('admin_message') %}
+    <div class="alert alert-info text-white px-4 py-3 rounded-lg mx-4 mt-4 flex items-center justify-between backdrop-blur-sm bg-opacity-90">
+        <span><i class="fas fa-info-circle mr-2 text-yellow-400"></i>{{ session.pop('admin_message') }}</span>
+        <button onclick="this.parentElement.style.animation='fadeOut 0.3s'; setTimeout(() => this.parentElement.remove(), 300)" class="text-white hover:text-yellow-400 transition">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold text-yellow-400 mb-4 float-animation">
+                        <i class="fas fa-shield-alt mr-2"></i>VPN Service
+                    </h3>
+                    <p class="text-gray-300 text-sm">Secure, fast, and reliable VPN service powered by V2Ray technology.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-yellow-400">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="{{ url_for('pricing') }}" class="hover:text-yellow-400 transition">Pricing</a></li>
+                        <li><a href="{{ url_for('servers') }}" class="hover:text-yellow-400 transition">Server Locations</a></li>
+                        <li><a href="{{ url_for('faq') }}" class="hover:text-yellow-400 transition">FAQ</a></li>
+                        <li><a href="{{ url_for('contact') }}" class="hover:text-yellow-400 transition">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-yellow-400">Support</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="#" class="hover:text-yellow-400 transition">Documentation</a></li>
+                        <li><a href="#" class="hover:text-yellow-400 transition">Setup Guide</a></li>
+                        <li><a href="#" class="hover:text-yellow-400 transition">Troubleshooting</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-yellow-400">Legal</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="#" class="hover:text-yellow-400 transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-yellow-400 transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-yellow-400 transition">Refund Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-yellow-400 border-opacity-30 mt-8 pt-8 text-center text-sm text-gray-300">
+                <p>&copy; 2024 VPN Service. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Mobile Menu Toggle
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const btn = document.getElementById('mobile-menu-btn');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('block', 'animate-slideDown');
+                btn.classList.add('bg-yellow-400', 'text-black');
+                btn.classList.remove('border-yellow-400', 'text-yellow-400');
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('block', 'animate-slideDown');
+                btn.classList.remove('bg-yellow-400', 'text-black');
+                btn.classList.add('border-yellow-400', 'text-yellow-400');
+            }
+        }
+        
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                const menu = document.getElementById('mobile-menu');
+                const btn = document.getElementById('mobile-menu-btn');
+                menu.classList.add('hidden');
+                menu.classList.remove('block');
+                btn.classList.remove('bg-yellow-400', 'text-black');
+                btn.classList.add('border-yellow-400', 'text-yellow-400');
+            });
+        });
+    </script>
+</body>
+</html>
+
