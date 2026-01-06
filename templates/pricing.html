@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Pricing - VPN Service{% endblock %}
+
+{% block content %}
+<div class="text-center mb-12">
+    <h1 class="text-4xl font-bold mb-4">Choose Your Plan</h1>
+    <p class="text-xl text-gray-300">Flexible pricing plans to suit your needs</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    {% for plan in plans %}
+    <div class="pricing-card card fade-in-up" style="animation-delay: {{ loop.index0 * 0.2 }}s;">
+        <div class="text-center">
+            <h3 class="text-2xl font-bold mb-2 text-yellow-400">{{ plan['name'] }}</h3>
+            <div class="my-6">
+                <span class="text-5xl font-bold gradient-text">${{ "%.2f"|format(plan['price']) }}</span>
+            </div>
+            <p class="text-gray-300 mb-6">{{ plan['duration_days'] }} Days Access</p>
+            
+            <ul class="text-left space-y-3 mb-8">
+                <li class="flex items-center text-gray-300">
+                    <i class="fas fa-check text-yellow-400 mr-2"></i>
+                    <span>Unlimited Bandwidth</span>
+                </li>
+                <li class="flex items-center text-gray-300">
+                    <i class="fas fa-check text-yellow-400 mr-2"></i>
+                    <span>All Server Locations</span>
+                </li>
+                <li class="flex items-center text-gray-300">
+                    <i class="fas fa-check text-yellow-400 mr-2"></i>
+                    <span>V2Ray Configuration</span>
+                </li>
+                <li class="flex items-center text-gray-300">
+                    <i class="fas fa-check text-yellow-400 mr-2"></i>
+                    <span>24/7 Support</span>
+                </li>
+                <li class="flex items-center text-gray-300">
+                    <i class="fas fa-check text-yellow-400 mr-2"></i>
+                    <span>No Logs Policy</span>
+                </li>
+            </ul>
+            
+            {% if session.user_id %}
+                <a href="{{ url_for('subscribe', plan_id=plan['id']) }}" class="btn-primary w-full text-center block">
+                    <i class="fas fa-shopping-cart mr-2"></i>Subscribe Now
+                </a>
+            {% else %}
+                <a href="{{ url_for('auth_page') }}#register" class="btn-primary w-full text-center block">
+                    <i class="fas fa-user-plus mr-2"></i>Sign Up to Subscribe
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="mt-12 text-center">
+    <p class="text-gray-400 mb-4">All plans include the same features. Choose based on your subscription duration preference.</p>
+    <p class="text-sm text-gray-500">* Payment via bank transfer. Admin will review and activate your subscription within 24 hours.</p>
+</div>
+{% endblock %}
+
