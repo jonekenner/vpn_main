@@ -186,3 +186,4 @@ class Database:
 # Database instance
 db = Database()
 
+
