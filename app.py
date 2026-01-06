@@ -494,7 +494,7 @@ def admin_toggle_user(user_id):
 @app.route('/admin/users/assign/<int:user_id>', methods=['POST'])
 @admin_required
 def admin_assign_subscription(user_id):
-    """Assign subscription to user"""
+      #Assign subscription to user
     plan_id = int(request.form.get('plan_id', 0))
     success, message = assign_subscription(user_id, plan_id)
     
@@ -509,7 +509,7 @@ def admin_assign_subscription(user_id):
 @app.route('/admin/users/config/<int:user_id>')
 @admin_required
 def admin_generate_config(user_id):
-    """Generate V2Ray config for user"""
+    #Generate V2Ray config for user
     config = generate_v2ray_config(user_id)
     if config:
         session['admin_message'] = "V2Ray config generated successfully"
